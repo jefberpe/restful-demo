@@ -1,0 +1,107 @@
+
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+    id 'com.gradle.build-scan' version '2.0.2'
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.flywaydb.flyway' version "6.0.0"
+    id "nu.studer.jooq" version "3.0.3"
+
+    // Apply the application plugin to add support for building a CLI application
+    id 'application'
+}
+
+repositories {
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+dependencies {
+    // This dependency is used by the application.
+    implementation 'org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.1.7.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.1.7.RELEASE'
+    implementation 'org.postgresql:postgresql:42.2.6'
+    implementation 'com.google.guava:guava:28.0-jre'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+
+    // Setting JOOQ required driver
+    jooqRuntime 'org.postgresql:postgresql:42.2.6'
+
+    compile 'org.jooq:jooq'
+}
+
+application {
+    // Define the main class for the application
+    mainClassName = 'com.demo.demo1.App'
+}
+
+bootJar {
+    mainClassName = 'com.demo.demo1.App'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.demo.demo1.App'
+    }
+}
+
+flyway {
+    driver = datasourceDriver
+    url = datasourceUrl
+    user = datasourceUsername
+    password = datasourcePassword
+    schemas = [datasourceSchema]
+    baselineOnMigrate = true
+    baselineDescription = true
+}
+
+jooq {
+    demo1(sourceSets.main) {
+        jdbc {
+            driver = datasourceDriver
+            url = datasourceUrl
+            user = datasourceUsername
+            password = datasourcePassword
+            schema = datasourceSchema
+        }
+        generator {
+            name = "org.jooq.codegen.DefaultGenerator"
+            strategy {
+                name = "org.jooq.codegen.DefaultGeneratorStrategy"
+            }
+            database {
+                name = "org.jooq.meta.postgres.PostgresDatabase"
+                inputSchema = "public"
+                excludes = "public.schema_version"
+            }
+            generate {
+                relations = false
+                deprecated = false
+                records = true
+                pojos = true
+                generatedAnnotation = false
+            }
+            target {
+                packageName = "com.demo.demo1.model.jooq"
+                directory = "src/main/java/"
+            }
+        }
+    }
+}
+
+task deleteDemo1JooqSchemaSource {
+    doLast {
+        delete "src/main/java/com/demo/demo1/model/jooq"
+    }
+}
+
+deleteDemo1JooqSchemaSource.onlyIf { project.hasProperty("generateJooq") }
+generateDemo1JooqSchemaSource.onlyIf { project.hasProperty("generateJooq") }
+generateDemo1JooqSchemaSource.dependsOn deleteDemo1JooqSchemaSource
