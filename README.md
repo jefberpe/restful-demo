@@ -9,6 +9,7 @@ RESTful solution using Spring Boot with JOOQ.
 * [Spring](https://spring.io/docs)
 * [Spring Boot](http://projects.spring.io/spring-boot)
 * [PostgreSQL](https://www.postgresql.org)
+* [JOOQ](https://www.jooq.org)
 * [Flyway](https://flywaydb.org)
 * [Swagger](http://swagger.io)
 * [Gradle](https://gradle.org)
