@@ -1,5 +1,7 @@
 build/
 .gradle
+.gradlew
+.gradlew.bat
 *.jar
 *.tar.gz
 node_modules/
