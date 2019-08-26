@@ -41,9 +41,6 @@ To start up the server there are several options:
 * `java -jar build/libs/demo1-<version>.jar` to start up the server.
 * `gradlew bootRun` to start up the server in debug mode.
 
-## Project Tests
-* To execute the project tests you can use `gradle test`
-
 ## RESTful API Documentation with Swagger
 * To see the RESTful API documentation you can access this url `http://localhost:8080/swagger-ui.html`
 
